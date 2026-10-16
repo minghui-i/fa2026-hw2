@@ -3,7 +3,7 @@
 
 model:
   # TODO: a step up from staging's model
-  name: qwen2.5:0.5b
+  name: qwen2.5:1.5b
 
 resources:
   requests:
