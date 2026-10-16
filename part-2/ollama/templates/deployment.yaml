@@ -17,4 +17,40 @@ spec:
         app.kubernetes.io/name: ollama
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      # TODO: complete spec for ollama based on Part 1
+      containers:
+        - name: {{ .Release.Name }}-ollama
+          # TODO: use the `ollama/ollama:latest` image
+          image: "{{.Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          volumeMounts:
+            # TODO: mount the volume at /root/.ollama
+            - name: {{ .Release.Name }}-ollama-data
+              mountPath: /root/.ollama
+          readinessProbe:
+            # TODO: check for the port being alive every 5 seconds
+            httpGet:
+              path: /
+              port: {{.Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            # TODO: check for the port being alive every 10 seconds
+            httpGet:
+              path: /
+              port: {{.Values.service.port }}
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      volumes:
+        # TODO: You'll need to configure pvc to make this work
+        - name: {{ .Release.Name }}-ollama-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-ollama-data
